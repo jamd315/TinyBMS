@@ -18,7 +18,15 @@
 #define R1 1000000
 #define R2 430000
 
-// Function declarations
+// Enum
+typedef enum {
+	POLL = 0x20
+} TWI_Command_t;
+
+// TWI address
+#define TWI_ADDR 0x22  // Randomly generated
+
+// Function prototypes
 void ADC_init(void);
 float ADC_read(void);
 void flash_n(uint8_t n_times);
