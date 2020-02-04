@@ -20,16 +20,16 @@
 
 // Enum
 typedef enum {
-	POLL = 0x20
+	LED_ON	= 0x01,
+	LED_OFF	= 0x02,
+	POLL	= 0x20	
 } TWI_Command_t;
 
 // TWI address
 #define TWI_ADDR 0x22  // Randomly generated
 
 // Function prototypes
-void ADC_init(void);
-float ADC_read(void);
-void flash_n(uint8_t n_times);
-void flash_byte(uint8_t data);
+float Bat_read(void);
+void flash(void);
 
 #endif /* MAIN_H_ */
