@@ -4,30 +4,21 @@
 #include <util/delay.h>	 // _delay_ms
 #include <string.h>		 // memcpy
 #include "main.h"
+#include "I2C.h"
 #include "ADC.h"         // ADC_init, ADC_read
-#include "usiTwiSlave.h" // 
+#include "Debug_State.h"
 
 
 int main(void)
 {
-	DDRB = 
-		(0 << BAT) |  // Might not be necessary?
-		(1 << TRIGGER_L);
-	//ADC_init();
-	usiTwiSlaveInit(0x22);
-	//TWI_Command_t command;
+	Debug_LED_init();
+	ADC_init();
+	I2C_init();
+	Debug_LED_show(STARTUP_COMPLETE);
 	while(1)
 	{
-		usiTwiTransmitByte(0b11110101);
+		//Debug_LED_show(I2C_read());
 	}
-}
-
-void flash(void)
-{
-	PORTB |= (1 << TRIGGER_L);
-	_delay_ms(1000);
-	PORTB &= ~(1 << TRIGGER_L);
-	_delay_ms(1000);
 }
 
 float Bat_read(void)

@@ -6,6 +6,7 @@ TODO a real ring buffer would be neat to implement
 #include <avr/interrupt.h>
 #include <stdbool.h>
 #include "I2C.h"
+#include "Debug_State.h"
 
 // Static and inline function and variable declarations
 static inline void SET_USI_TO_SEND_ACK(void);
@@ -21,25 +22,6 @@ static volatile uint8_t RX_tail;
 static uint8_t TX_buf[I2C_BUFFER_LEN];
 static volatile uint8_t TX_head;
 static volatile uint8_t TX_tail;
-
-
-
-// Debug stuff
-
-#define F_CPU 8000000UL
-#include <util/delay.h>
-
-static inline void flash(void)
-{
-	PORTB |= (1 << PB3);
-	_delay_ms(10);
-	PORTB &= ~(1 << PB3);
-	_delay_ms(10);
-}
-
-
-// End debug stuff
-
 
 
 void I2C_init(void)  // Start as a slave
@@ -99,7 +81,7 @@ bool I2C_available(void)
 
 ISR(USI_START_vect)
 {
-	flash();  // Never goes off
+	Debug_LED_show(ISR_TRIGGER);
 	I2C_DDR &= ~(1 << I2C_SDA);  // Set SDA to input
 	while( (I2C_PIN & (1 << I2C_SCL)) & !(USISR & (1 << USIPF)) );  // Wait for SCL to go low after triggering the start condition, unless there's a stop condition  TODO I don't like the stop condition check here
 	USICR =
@@ -124,6 +106,7 @@ ISR(USI_START_vect)
 
 ISR(USI_OVF_vect)
 {
+	Debug_LED_show(ISR_TRIGGER);
 	switch(I2C_overflow_state)
 	{
 		case CHECK_ADDRESS:
